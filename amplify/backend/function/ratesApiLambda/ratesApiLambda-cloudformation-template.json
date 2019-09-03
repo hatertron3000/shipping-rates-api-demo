@@ -2,39 +2,6 @@
 	"AWSTemplateFormatVersion": "2010-09-09",
 	"Description": "Lambda resource stack creation using Amplify CLI",
 	"Parameters": {
-		"RECAPTCHASECRET": {
-			"Type": "String",
-			"Default": ""
-		},
-		"modules": {
-			"Type": "String",
-			"Default": "",
-			"Description": "Comma-delimmited list of modules to be executed by a lambda trigger. Sent to resource as an env variable."
-		},
-		"resourceName": {
-			"Type": "String",
-			"Default": ""
-		},
-		"trigger": {
-			"Type": "String",
-			"Default": "true"
-		},
-		"functionName": {
-			"Type": "String",
-			"Default": ""
-		},
-		"roleName": {
-			"Type": "String",
-			"Default": ""
-		},
-		"parentResource": {
-			"Type": "String",
-			"Default": ""
-		},
-		"parentStack": {
-			"Type": "String",
-			"Default": ""
-		},
 		"env": {
 			"Type": "String"
 		}
@@ -61,12 +28,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"CognitoStoresVerifyAuthChallengeResponse",
+						"ratesApiLambda",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"CognitoStoresVerifyAuthChallengeResponse",
+									"ratesApiLambda",
 									"-",
 									{
 										"Ref": "env"
@@ -81,14 +48,8 @@
 						"ENV": {
 							"Ref": "env"
 						},
-						"MODULES": {
-							"Ref": "modules"
-						},
 						"REGION": {
 							"Ref": "AWS::Region"
-						},
-						"RECAPTCHASECRET": {
-							"Ref": "RECAPTCHASECRET"
 						}
 					}
 				},
@@ -98,11 +59,11 @@
 						"Arn"
 					]
 				},
-				"Runtime": "nodejs8.10",
+				"Runtime": "nodejs10.x",
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-bigcommerce-devcarrier-20190903112317-deployment",
-					"S3Key": "amplify-builds/CognitoStoresVerifyAuthChallengeResponse-4b45562b774f46754d42-build.zip"
+					"S3Key": "amplify-builds/ratesApiLambda-50746944774163566c35-build.zip"
 				}
 			}
 		},
@@ -112,12 +73,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"CognitoStoresVerifyAuthChallengeResponse",
+						"amplifybigcommerceLambdaRolec78c6c6f",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"CognitoStoresVerifyAuthChallengeResponse",
+									"amplifybigcommerceLambdaRolec78c6c6f",
 									"-",
 									{
 										"Ref": "env"
@@ -206,6 +167,11 @@
 		"Region": {
 			"Value": {
 				"Ref": "AWS::Region"
+			}
+		},
+		"LambdaExecutionRole": {
+			"Value": {
+				"Ref": "LambdaExecutionRole"
 			}
 		}
 	}

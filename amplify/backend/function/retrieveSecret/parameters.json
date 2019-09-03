@@ -1,5 +1,5 @@
 {
-    "SECRETNAME": "<SECRET-NAME>",
-    "SECRETKEY": "<SECRET-KEY>",
-    "SECRETARN": "<SECRET-ARN>"
+    "SECRETNAME": "staging/Amplify-BigCommerce-Demo",
+    "SECRETKEY": "dev_carrier_secret",
+    "SECRETARN": "arn:aws:secretsmanager:us-east-1:152493541084:secret:staging/Amplify-BigCommerce-Demo-nrwMvz"
 }

@@ -1,6 +1,6 @@
 {
-    "REDIRECTURL": "<YOUR-APP'S-REDIRECT-CALLBACK-URL>",
-    "BCCLIENTID": "<YOUR-BC-API-CLIENT>",
+    "REDIRECTURL": "https://d2ft3ufs4czn1z.cloudfront.net/oauth",
+    "BCCLIENTID": "dg5i2j5znect4xemj1azrmuxeambayc",
     "modules": "",
     "resourceName": "CognitoStoresPreSignup"
 }

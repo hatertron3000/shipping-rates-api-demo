@@ -1,0 +1,17 @@
+{
+    "permissions": {
+        "storage": {
+            "DynamoCarrierServices": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        },
+        "auth": {
+            "CognitoStores": [
+                "read"
+            ]
+        }
+    }
+}

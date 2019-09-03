@@ -209,13 +209,13 @@ app.post('/webhooks', async function (req, res) {
   }
   catch (err) {
     console.log(err)
-    res.json({ status: 500, error: new Error(`Error creating the webhook for ${user.Username}`) })
+    res.json({ status: 500, error: new Error(`Error creating the webhook`) })
   }
 })
 
 app.put('/webhooks', function (req, res) {
   // Add your code here
-  res.status(405).json({ message: unsupported })
+  res.status(405).json({ message: 'unsupported' })
 })
 
 app.put('/webhooks/:id', async function (req, res) {
@@ -261,14 +261,14 @@ app.put('/webhooks/:id', async function (req, res) {
   }
   catch (err) {
     console.log(err)
-    res.json({ status: 500, error: new Error(`Error updating the webhook for ${user.Username}`) })
+    res.json({ status: 500, error: new Error(`Error updating the webhook`) })
   }
 })
 
 
 app.delete('/webhooks', function (req, res) {
   // Add your code here
-  res.status(405).json({ message: unsupported })
+  res.status(405).json({ message: 'unsupported' })
 })
 
 app.delete('/webhooks/:id', async function (req, res) {
@@ -313,7 +313,7 @@ app.delete('/webhooks/:id', async function (req, res) {
   }
   catch (err) {
     console.log(err)
-    res.json({ status: 500, error: new Error(`Error updating the webhook for ${user.Username}`) })
+    res.json({ status: 500, error: new Error(`Error updating the webhook`) })
   }
 })
 

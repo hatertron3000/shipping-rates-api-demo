@@ -53,11 +53,7 @@ class StoreInformation extends Component {
                 <ProgressCircle size={'large'} />
             </div>
             : <Panel marginTop="small">
-                <Flex justifyContent="flex-start" flexDirection="row">
-                    <Flex.Item>
-                        <H2>{this.props.lang.heading}</H2>
-                    </Flex.Item>
-                </Flex>
+                <H2>{this.props.lang.heading}</H2>
                 <Text>{this.props.lang.cta}</Text>
                 <Button actionType="normal"
                     isLoading={this.state.disabled}

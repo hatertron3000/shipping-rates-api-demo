@@ -108,7 +108,7 @@
 				"Runtime": "nodejs8.10",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-bigcommerce-dev-20190811094120-deployment",
+					"S3Bucket": "amplify-bigcommerce-devcarrier-20190903112317-deployment",
 					"S3Key": "amplify-builds/CognitoStoresCreateAuthChallenge-694759524951464a474e-build.zip"
 				}
 			}

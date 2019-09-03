@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { Box } from '@bigcommerce/big-design'
 import Navigation from './Navigation'
-import StoreInformation from './StoreInformation';
+import StoreInformation from './StoreInformation'
+import CarrierSettings from './CarrierSettings'
 
 class Dashboard extends Component {
     constructor(props) {
@@ -19,6 +20,9 @@ class Dashboard extends Component {
                 activeTab={this.props.location.pathname} />
             <Route path={'/dashboard/store-information'} render={() =>
                 <StoreInformation lang={this.props.lang.StoreInformation} />}
+            />
+            <Route path={'/dashboard/carrier-settings'} render={() =>
+                <CarrierSettings lang={this.props.lang.CarrierSettings} />}
             />
         </Box>
     }

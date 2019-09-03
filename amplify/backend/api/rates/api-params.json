@@ -1,0 +1,60 @@
+{
+    "paths": [
+        {
+            "name": "/rates",
+            "lambdaFunction": "ratesApiLambda",
+            "privacy": {
+                "open": true
+            }
+        },
+        {
+            "name": "/services",
+            "lambdaFunction": "servicesApiLambda",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        }
+    ],
+    "resourceName": "rates",
+    "apiName": "rates",
+    "functionArns": [
+        {
+            "lambdaFunction": "ratesApiLambda"
+        },
+        {
+            "lambdaFunction": "servicesApiLambda"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "amplify-bigcommerce-devcarrier-20190903112317-authRole",
+        "unAuthRoleName": "amplify-bigcommerce-devcarrier-20190903112317-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "ratesApiLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "servicesApiLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "ca950a9a"
+}
