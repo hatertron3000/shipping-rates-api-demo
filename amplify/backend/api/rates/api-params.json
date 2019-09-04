@@ -6,20 +6,6 @@
             "privacy": {
                 "open": true
             }
-        },
-        {
-            "name": "/services",
-            "lambdaFunction": "servicesApiLambda",
-            "privacy": {
-                "private": true,
-                "auth": [
-                    "/POST",
-                    "/GET",
-                    "/PUT",
-                    "/PATCH",
-                    "/DELETE"
-                ]
-            }
         }
     ],
     "resourceName": "rates",
@@ -27,9 +13,6 @@
     "functionArns": [
         {
             "lambdaFunction": "ratesApiLambda"
-        },
-        {
-            "lambdaFunction": "servicesApiLambda"
         }
     ],
     "privacy": {
@@ -46,15 +29,7 @@
                 "Name",
                 "Arn"
             ]
-        },
-        {
-            "category": "function",
-            "resourceName": "servicesApiLambda",
-            "attributes": [
-                "Name",
-                "Arn"
-            ]
         }
     ],
-    "uuid": "ca950a9a"
+    "uuid": "07c6b44e"
 }

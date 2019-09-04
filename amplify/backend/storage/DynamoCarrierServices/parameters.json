@@ -1,5 +1,0 @@
-{
-    "tableName": "DynamoCarrierServices",
-    "partitionKeyName": "Hash",
-    "partitionKeyType": "S"
-}

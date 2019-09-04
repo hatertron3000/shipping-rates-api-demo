@@ -1,257 +1,223 @@
 {
-    "storage": {
-        "DynamoStores": {
-            "service": "DynamoDB",
-            "providerPlugin": "awscloudformation"
-        },
-        "DynamoCarrierServices": {
-            "service": "DynamoDB",
-            "providerPlugin": "awscloudformation"
-        }
-    },
-    "function": {
-        "CognitoStoresCreateAuthChallenge": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "retrieveSecret",
-                    "attributes": [
-                        "Name"
-                    ]
-                }
-            ]
-        },
-        "CognitoStoresDefineAuthChallenge": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true
-        },
-        "CognitoStoresPreSignup": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "storage",
-                    "resourceName": "DynamoStores",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "retrieveSecret",
-                    "attributes": [
-                        "Name"
-                    ]
-                }
-            ]
-        },
-        "CognitoStoresVerifyAuthChallengeResponse": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true
-        },
-        "bcApiClient": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true
-        },
-        "bcApiLambda": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "storage",
-                    "resourceName": "DynamoStores",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "bcApiClient",
-                    "attributes": [
-                        "Name"
-                    ]
-                },
-                {
-                    "category": "auth",
-                    "resourceName": "CognitoStores",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                }
-            ]
-        },
-        "retrieveSecret": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true
-        },
-        "uninstallLambda": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "storage",
-                    "resourceName": "DynamoStores",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                },
-                {
-                    "category": "auth",
-                    "resourceName": "CognitoStores",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "retrieveSecret",
-                    "attributes": [
-                        "Name"
-                    ]
-                }
-            ]
-        },
-        "ratesApiLambda": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true
-        },
-        "servicesApiLambda": {
-            "service": "Lambda",
-            "providerPlugin": "awscloudformation",
-            "build": true,
-            "dependsOn": [
-                {
-                    "category": "storage",
-                    "resourceName": "DynamoCarrierServices",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                },
-                {
-                    "category": "auth",
-                    "resourceName": "CognitoStores",
-                    "attributes": [
-                        "UserPoolId"
-                    ]
-                }
-            ]
-        }
-    },
-    "auth": {
-        "CognitoStores": {
-            "service": "Cognito",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "CognitoStoresCreateAuthChallenge",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "CognitoStoresDefineAuthChallenge",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "CognitoStoresPreSignup",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "CognitoStoresVerifyAuthChallengeResponse",
-                    "triggerProvider": "Cognito",
-                    "attributes": [
-                        "Arn",
-                        "Name"
-                    ]
-                }
-            ]
-        }
-    },
-    "api": {
-        "bcApi": {
-            "service": "API Gateway",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "bcApiLambda",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                }
-            ]
-        },
-        "uninstallApi": {
-            "service": "API Gateway",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "uninstallLambda",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                }
-            ]
-        },
-        "rates": {
-            "service": "API Gateway",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [
-                {
-                    "category": "function",
-                    "resourceName": "ratesApiLambda",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                },
-                {
-                    "category": "function",
-                    "resourceName": "servicesApiLambda",
-                    "attributes": [
-                        "Name",
-                        "Arn"
-                    ]
-                }
-            ]
-        }
-    },
-    "hosting": {
-        "S3AndCloudFront": {
-            "service": "S3AndCloudFront",
-            "providerPlugin": "awscloudformation"
-        }
-    }
+	"storage": {
+		"DynamoStores": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
+		}
+	},
+	"function": {
+		"CognitoStoresCreateAuthChallenge": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "retrieveSecret",
+					"attributes": [
+						"Name"
+					]
+				}
+			]
+		},
+		"CognitoStoresDefineAuthChallenge": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		},
+		"CognitoStoresPreSignup": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "DynamoStores",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "retrieveSecret",
+					"attributes": [
+						"Name"
+					]
+				}
+			]
+		},
+		"CognitoStoresVerifyAuthChallengeResponse": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		},
+		"bcApiClient": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		},
+		"bcApiLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "DynamoStores",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "bcApiClient",
+					"attributes": [
+						"Name"
+					]
+				},
+				{
+					"category": "auth",
+					"resourceName": "CognitoStores",
+					"attributes": [
+						"UserPoolId"
+					]
+				}
+			]
+		},
+		"retrieveSecret": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		},
+		"uninstallLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "DynamoStores",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				},
+				{
+					"category": "auth",
+					"resourceName": "CognitoStores",
+					"attributes": [
+						"UserPoolId"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "retrieveSecret",
+					"attributes": [
+						"Name"
+					]
+				}
+			]
+		},
+		"ratesApiLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true
+		}
+	},
+	"auth": {
+		"CognitoStores": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "CognitoStoresCreateAuthChallenge",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "CognitoStoresDefineAuthChallenge",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "CognitoStoresPreSignup",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "CognitoStoresVerifyAuthChallengeResponse",
+					"triggerProvider": "Cognito",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				}
+			]
+		}
+	},
+	"api": {
+		"bcApi": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "bcApiLambda",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"uninstallApi": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "uninstallLambda",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"rates": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "ratesApiLambda",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		}
+	},
+	"hosting": {
+		"S3AndCloudFront": {
+			"service": "S3AndCloudFront",
+			"providerPlugin": "awscloudformation"
+		}
+	}
 }
