@@ -35,7 +35,6 @@ class CarrierSettings extends Component {
         this.setState({ disabled: true })
         const init = {
             body: {
-                Hash: 'abcd1234',
                 Services: [
                     {
                         "name": "Taco Express",

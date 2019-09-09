@@ -31,7 +31,7 @@ const generateRate = (params) => {
   const cartRef = params.base_options.request_context.reference_values
     ? params.base_options.request_context.reference_values.find(ref => ref.name === 'cart_id')
     : 0
-  const cart_id = cartRef.value ? cartRef.value || 0
+  const cart_id = cartRef ? cartRef.value : 0
 
 
   const text = JSON.stringify({
@@ -94,7 +94,6 @@ const generateRate = (params) => {
       }
     }
   ]
-
   if (params.connection_options.expedited)
     quotes.push({
       "code": "mock-expedited",

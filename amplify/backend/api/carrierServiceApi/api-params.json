@@ -8,18 +8,18 @@
             }
         }
     ],
-    "resourceName": "rates",
-    "apiName": "rates",
+    "resourceName": "carrierServiceApi",
+    "apiName": "carrierServiceApi",
     "functionArns": [
         {
             "lambdaFunction": "ratesApiLambda"
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 0,
         "unauth": 0,
-        "authRoleName": "amplify-bigcommerce-devcarrier-20190903112317-authRole",
-        "unAuthRoleName": "amplify-bigcommerce-devcarrier-20190903112317-unauthRole"
+        "authRoleName": "amplify-bigcommerce-stagingcs-20190906153153-authRole",
+        "unAuthRoleName": "amplify-bigcommerce-stagingcs-20190906153153-unauthRole"
     },
     "dependsOn": [
         {
@@ -30,6 +30,5 @@
                 "Arn"
             ]
         }
-    ],
-    "uuid": "07c6b44e"
+    ]
 }

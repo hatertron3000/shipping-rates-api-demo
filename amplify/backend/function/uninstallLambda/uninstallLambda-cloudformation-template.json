@@ -90,7 +90,7 @@
 				"Runtime": "nodejs10.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-bigcommerce-devcarrier-20190903112317-deployment",
+					"S3Bucket": "amplify-bigcommerce-stagingcs-20190906153153-deployment",
 					"S3Key": "amplify-builds/uninstallLambda-697539324e4659757374-build.zip"
 				}
 			}

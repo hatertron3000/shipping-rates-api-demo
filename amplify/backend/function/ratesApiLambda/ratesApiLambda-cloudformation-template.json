@@ -62,8 +62,8 @@
 				"Runtime": "nodejs10.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-bigcommerce-devcarrier-20190903112317-deployment",
-					"S3Key": "amplify-builds/ratesApiLambda-50746944774163566c35-build.zip"
+					"S3Bucket": "amplify-bigcommerce-stagingcs-20190906153153-deployment",
+					"S3Key": "amplify-builds/ratesApiLambda-62514f3970713042752b-build.zip"
 				}
 			}
 		},

@@ -199,7 +199,7 @@
 				}
 			]
 		},
-		"rates": {
+		"carrierServiceApi": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
