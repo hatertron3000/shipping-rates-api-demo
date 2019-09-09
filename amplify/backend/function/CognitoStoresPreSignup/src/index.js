@@ -76,6 +76,53 @@ exports.handler = async (event) => {
                 const jsonData = JSON.parse(data),
                   encodedToken = Buffer.from(jsonData.access_token).toString('base64'),
                   dynamoDbClient = new AWS.DynamoDB(),
+                  defaultServices = [{
+                    M: {
+                      "name": {
+                        S: "Standard Delivery"
+                      },
+                      "price": {
+                        N: "5"
+                      },
+                      "expedited": {
+                        BOOL: false
+                      },
+                      "transit_time": {
+                        M: {
+                          "duration": {
+                            N: "7"
+                          },
+                          "units": {
+                            S: "BUSINESS_DAYS"
+                          }
+                        }
+                      }
+                    },
+                  },
+                  {
+                    M: {
+                      "name": {
+                        S: "Expedited Delivery"
+                      },
+                      "price": {
+                        N: "15"
+                      },
+                      "expedited": {
+                        BOOL: true
+                      },
+                      "transit_time": {
+                        M: {
+                          "duration": {
+                            N: "2"
+                          },
+                          "units": {
+                            S: "BUSINESS_DAYS"
+                          }
+                        }
+                      }
+                    },
+                  }
+                  ],
                   table = process.env.STORAGE_DYNAMOSTORES_NAME,
                   item = {
                     "Hash": {
@@ -92,6 +139,9 @@ exports.handler = async (event) => {
                     },
                     "Modified": {
                       N: Math.round((new Date()).getTime() / 1000).toString(),
+                    },
+                    "Services": {
+                      L: defaultServices,
                     },
                   }
                 const params = {

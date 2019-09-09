@@ -16,7 +16,7 @@
         }
     ],
     "privacy": {
-        "auth": 0,
+        "auth": 1,
         "unauth": 0,
         "authRoleName": "amplify-bigcommerce-stagingcs-20190906153153-authRole",
         "unAuthRoleName": "amplify-bigcommerce-stagingcs-20190906153153-unauthRole"
@@ -30,5 +30,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "ab995f5b"
 }

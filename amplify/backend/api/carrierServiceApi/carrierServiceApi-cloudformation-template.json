@@ -41,6 +41,8 @@
     },
     "Resources": {
         
+
+        
         
       "carrierServiceApi": {
         "Type": "AWS::ApiGateway::RestApi",
@@ -364,7 +366,7 @@
         
         
         
-      "DeploymentAPIGWcarrierServiceApi": {
+      "DeploymentAPIGWcarrierServiceApiab995f5b": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",

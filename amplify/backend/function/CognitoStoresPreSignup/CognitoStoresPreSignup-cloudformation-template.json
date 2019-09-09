@@ -144,7 +144,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-bigcommerce-stagingcs-20190906153153-deployment",
-					"S3Key": "amplify-builds/CognitoStoresPreSignup-42725234516335374e45-build.zip"
+					"S3Key": "amplify-builds/CognitoStoresPreSignup-54703042414a4c724d66-build.zip"
 				}
 			}
 		},

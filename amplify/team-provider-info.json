@@ -53,7 +53,6 @@
                 "retrieveSecret": {},
                 "uninstallLambda": {},
                 "ratesApiLambda": {},
-                "servicesApiLambda": {},
                 "DynamoStores": {},
                 "CognitoStores": {},
                 "DynamoCarrierServices": {}
