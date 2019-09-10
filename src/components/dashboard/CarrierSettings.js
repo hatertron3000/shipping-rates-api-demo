@@ -14,6 +14,7 @@ import {
     AddCircleOutlineIcon,
     DeleteIcon
 } from '@bigcommerce/big-design-icons'
+import Alert from '../common/Alert'
 
 class CarrierSettings extends Component {
     constructor(props) {
@@ -22,12 +23,21 @@ class CarrierSettings extends Component {
             loading: true,
             services: [],
             disabled: false,
+            errors: [],
         }
 
         this.handleClick = this.handleClick.bind(this)
     }
 
     componentDidMount() {
+        API.get(process.env.REACT_APP_RATESAPI, process.env.REACT_APP_SERVICESPATH)
+            .then(res => this.setState({ services: res.data, loading: false }))
+            .catch(err => {
+                console.log(err)
+                let errors = this.state.errors
+                errors.push('Error retrieving webhooks')
+                this.setState({ errors, loading: false })
+            })
         this.setState({ loading: false })
     }
 
@@ -63,6 +73,7 @@ class CarrierSettings extends Component {
             </div>
             : <Panel marginTop="small">
                 <H2>{this.props.lang.heading}</H2>
+                {this.state.errors.map(error => <Alert variant="warning" text={error} />)}
                 <Text>{this.props.lang.cta}</Text>
                 <Button
                     disabled={this.state.disabled}

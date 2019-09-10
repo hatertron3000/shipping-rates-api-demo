@@ -40,12 +40,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"ratesApiLambda",
+						"servicesApiLambda",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"ratesApiLambda",
+									"servicesApiLambda",
 									"-",
 									{
 										"Ref": "env"
@@ -68,6 +68,9 @@
 						},
 						"STORAGE_DYNAMOSTORES_ARN": {
 							"Ref": "storageDynamoStoresArn"
+						},
+						"AUTH_COGNITOSTORES_USERPOOLID": {
+							"Ref": "authCognitoStoresUserPoolId"
 						}
 					}
 				},
@@ -81,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-bigcommerce-stagingcs-20190906153153-deployment",
-					"S3Key": "amplify-builds/ratesApiLambda-7656484f48665a784e78-build.zip"
+					"S3Key": "amplify-builds/servicesApiLambda-454350724d324932762b-build.zip"
 				}
 			}
 		},
@@ -91,12 +94,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"amplifybigcommerceLambdaRolec78c6c6f",
+						"amplifybigcommerceLambdaRolea52ba416",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"amplifybigcommerceLambdaRolec78c6c6f",
+									"amplifybigcommerceLambdaRolea52ba416",
 									"-",
 									{
 										"Ref": "env"
@@ -190,11 +193,53 @@
 								"dynamodb:List*",
 								"dynamodb:Describe*",
 								"dynamodb:Scan",
-								"dynamodb:Query"
+								"dynamodb:Query",
+								"dynamodb:Update*",
+								"dynamodb:RestoreTable*"
 							],
 							"Resource": [
 								{
 									"Ref": "storageDynamoStoresArn"
+								}
+							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"cognito-identity:Describe*",
+								"cognito-identity:Get*",
+								"cognito-identity:List*",
+								"cognito-idp:Describe*",
+								"cognito-idp:AdminGetDevice",
+								"cognito-idp:AdminGetUser",
+								"cognito-idp:AdminList*",
+								"cognito-idp:List*",
+								"cognito-sync:Describe*",
+								"cognito-sync:Get*",
+								"cognito-sync:List*",
+								"iam:ListOpenIdConnectProviders",
+								"iam:ListRoles",
+								"sns:ListPlatformApplications"
+							],
+							"Resource": [
+								{
+									"Fn::Join": [
+										"",
+										[
+											"arn:aws:cognito-idp:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":userpool/",
+											{
+												"Ref": "authCognitoStoresUserPoolId"
+											}
+										]
+									]
 								}
 							]
 						}

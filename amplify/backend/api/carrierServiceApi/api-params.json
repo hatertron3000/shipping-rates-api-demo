@@ -6,6 +6,18 @@
             "privacy": {
                 "open": true
             }
+        },
+        {
+            "name": "/services",
+            "lambdaFunction": "servicesApiLambda",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/GET",
+                    "/PUT",
+                    "/PATCH"
+                ]
+            }
         }
     ],
     "resourceName": "carrierServiceApi",
@@ -13,6 +25,9 @@
     "functionArns": [
         {
             "lambdaFunction": "ratesApiLambda"
+        },
+        {
+            "lambdaFunction": "servicesApiLambda"
         }
     ],
     "privacy": {
@@ -29,7 +44,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "servicesApiLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
     ],
-    "uuid": "ab995f5b"
+    "uuid": "69991f6f"
 }

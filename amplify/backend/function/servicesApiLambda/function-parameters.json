@@ -2,6 +2,12 @@
     "permissions": {
         "storage": {
             "DynamoStores": [
+                "read",
+                "update"
+            ]
+        },
+        "auth": {
+            "CognitoStores": [
                 "read"
             ]
         }

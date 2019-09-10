@@ -1,12 +1,48 @@
-/*
+/* Amplify Params - DO NOT EDIT
+You can access the following resource attributes as environment variables from your Lambda function
+var environment = process.env.ENV
+var region = process.env.REGION
+var storageDynamoStoresName = process.env.STORAGE_DYNAMOSTORES_NAME
+var storageDynamoStoresArn = process.env.STORAGE_DYNAMOSTORES_ARN
+
+Amplify Params - DO NOT EDIT *//*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
     http://aws.amazon.com/apache2.0/
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
+const AWS = require('aws-sdk')
+const dynamoDbClient = new AWS.DynamoDB.DocumentClient()
 
+async function getServices(hash) {
+  try {
+    const table = process.env.STORAGE_DYNAMOSTORES_NAME
+    const params = {
+      TableName: table,
+      Limit: 1,
+      ExpressionAttributeValues: {
+        ':h': hash
+      },
+      ExpressionAttributeNames: {
+        '#Hash': 'Hash',
+        '#Services': 'Services',
+      },
+      KeyConditionExpression: '#Hash = :h',
+      ProjectionExpression: '#Services'
+    }
 
+    const results = await dynamoDbClient.query(params).promise()
+    if (results.Items.length === 0) return null
+    else {
+      return results.Items[0].Services
+    }
+  }
+  catch (err) {
+    console.log(err)
+    return null
+  }
+}
 
 
 var express = require('express')
@@ -20,13 +56,13 @@ app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
 // Enable CORS for all methods
-app.use(function (req, res, next) {
+app.use(async function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 })
 
-const generateRate = (params) => {
+const generateRate = async (params) => {
   const rate_id = uuid()
   const cartRef = params.base_options.request_context.reference_values
     ? params.base_options.request_context.reference_values.find(ref => ref.name === 'cart_id')
@@ -47,66 +83,25 @@ const generateRate = (params) => {
   logging.items = params.base_options.items
   logging.expedited = params.connection_options.expedited
 
-  const quotes = [
-    {
-      "code": "mock-1",
-      "display_name": "Mock Service-1",
-      "cost": {
-        "currency": "USD",
-        "amount": 8.00
-      },
-      "discounted_cost": {
-        "currency": "USD",
-        "amount": 6.00
-      },
-      "handling_fee": {
-        "currency": "USD",
-        "amount": 0.5
-      },
-      "transit_time": {
-        "units": "BUSINESS_DAYS",
-        "duration": 5
-      }
+  const hash = params.base_options.store_id
+  const services = await getServices(hash)
 
+  let quotes = services
+  console.log(`about to filter these quotes:
+  ------------
+  ${quotes}`)
+  if (!params.connection_options.expedited)
+    quotes = quotes.filter(quote => !quote.expedited)
+
+  quotes = quotes.map(quote => ({
+    code: `demo-${quotes.indexOf(quote)}`,
+    display_name: quote.name,
+    cost: {
+      currency: 'USD',
+      amount: quote.price,
     },
-    {
-      "code": "mock-2",
-      "display_name": "Mock Service-2",
-      "cost": {
-        "currency": "USD",
-        "amount": 8.00
-      },
-      "transit_time": {
-        "units": "BUSINESS_DAYS",
-        "duration": 5
-      }
-    },
-    {
-      "code": "mock-3",
-      "display_name": "Mock Service-3",
-      "cost": {
-        "currency": "USD",
-        "amount": 8.00
-      },
-      "transit_time": {
-        "units": "BUSINESS_DAYS",
-        "duration": 5
-      }
-    }
-  ]
-  if (params.connection_options.expedited)
-    quotes.push({
-      "code": "mock-expedited",
-      "display_name": "Mock Service - Expedited",
-      "cost": {
-        "currency": "USD",
-        "amount": 16.00
-      },
-      "transit_time": {
-        "units": "BUSINESS_DAYS",
-        "duration": 2
-      }
-    })
+    transit_time: quote.transit_time
+  }))
 
   const rate = {
     "quote_id": "sample_quote",
@@ -127,8 +122,8 @@ const generateRate = (params) => {
     ]
   }
 
+  logging.quotes = quotes
   console.log(logging)
-
   return rate
 }
 
@@ -149,8 +144,8 @@ app.get('/rates/*', function (req, res) {
 * POST *
 ****************************/
 
-app.post('/rates', function (req, res) {
-  const rate = generateRate(req.body)
+app.post('/rates', async function (req, res) {
+  const rate = await generateRate(req.body)
   if (rate)
     res.status(200).json(rate)
   else
