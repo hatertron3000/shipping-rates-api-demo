@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 import { Box } from '@bigcommerce/big-design'
 import Navigation from './Navigation'
 import StoreInformation from './StoreInformation'
-import CarrierSettings from './CarrierSettings'
+import CarrierSettings from './carrierSettings'
 
 class Dashboard extends Component {
     constructor(props) {

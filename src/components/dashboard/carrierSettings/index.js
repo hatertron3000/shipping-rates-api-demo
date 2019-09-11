@@ -2,19 +2,13 @@ import React, { Component } from 'react'
 import { API } from 'aws-amplify'
 import {
     Panel,
-    Box,
-    Form,
-    Input,
     ProgressCircle,
     H2,
     Button,
     Text
 } from '@bigcommerce/big-design'
-import {
-    AddCircleOutlineIcon,
-    DeleteIcon
-} from '@bigcommerce/big-design-icons'
-import Alert from '../common/Alert'
+import Alert from '../../common/Alert'
+import ServicesList from './ServicesList'
 
 class CarrierSettings extends Component {
     constructor(props) {
@@ -31,14 +25,16 @@ class CarrierSettings extends Component {
 
     componentDidMount() {
         API.get(process.env.REACT_APP_RATESAPI, process.env.REACT_APP_SERVICESPATH)
-            .then(res => this.setState({ services: res.data, loading: false }))
+            .then(res => {
+                console.log(res)
+                this.setState({ services: res, loading: false })
+            })
             .catch(err => {
                 console.log(err)
                 let errors = this.state.errors
                 errors.push('Error retrieving webhooks')
                 this.setState({ errors, loading: false })
             })
-        this.setState({ loading: false })
     }
 
     handleClick() {
@@ -48,7 +44,12 @@ class CarrierSettings extends Component {
                 Services: [
                     {
                         "name": "Taco Express",
-                        "price": "32"
+                        "price": "32",
+                        "expedited": true,
+                        "transit_time": {
+                            "duration": "16",
+                            "units": "DAYS"
+                        }
                     }
                 ]
             }
@@ -75,6 +76,7 @@ class CarrierSettings extends Component {
                 <H2>{this.props.lang.heading}</H2>
                 {this.state.errors.map(error => <Alert variant="warning" text={error} />)}
                 <Text>{this.props.lang.cta}</Text>
+                <ServicesList services={this.state.services} />
                 <Button
                     disabled={this.state.disabled}
                     onClick={this.handleClick}
