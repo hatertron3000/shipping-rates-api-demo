@@ -1,8 +1,10 @@
-import React from 'react'
-import { Box, H3, H4, Grid, Button } from '@bigcommerce/big-design'
-import ServiceListItem from './ServiceListItem'
+import React, { Component } from 'react'
+import { Box, H3, H4, Grid, Button, Text, Link } from '@bigcommerce/big-design'
+import { AddIcon } from '@bigcommerce/big-design-icons'
+import ServiceListItemEdit from './ServiceListItemEdit'
 
-const ServicesList = (props) => {
+
+const ServicesEdit = (props) => {
     return <>
         <Box>
             <H3>Current Services</H3>
@@ -24,23 +26,35 @@ const ServicesList = (props) => {
                     <H4>Transit Time</H4>
                 </Grid.Item>
                 {props.services.map(service => (
-                    <ServiceListItem
+                    <ServiceListItemEdit
+                        lang={props.lang}
+                        services={props.services}
+                        setServices={props.setServices}
+                        onDeleteClick={props.onDeleteClick}
+                        index={props.services.indexOf(service)}
                         key={props.services.indexOf(service)}
                         name={service.name}
                         price={service.price}
                         expedited={service.expedited}
                         transit_time={service.transit_time} />
                 ))}
+                <Grid.Item>
+                    <Link><Text onClick={props.onAddClick}>
+                        <AddIcon color="success" size="large" />{props.lang.create}
+                    </Text>
+                    </Link>
+                </Grid.Item>
             </Grid>
             <Button
-                onClick={props.onEditClick}
+                onClick={props.onSaveClick}
                 margin="large"
+                disabled={!props.servicesAreValid}
+                isLoading={props.saving}
             >
-                {props.lang.edit}
+                {props.lang.save}
             </Button>
         </Box>
     </>
 }
 
-
-export default ServicesList
+export default ServicesEdit

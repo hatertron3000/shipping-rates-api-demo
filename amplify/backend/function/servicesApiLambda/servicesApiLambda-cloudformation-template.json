@@ -84,7 +84,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-bigcommerce-stagingcs-20190906153153-deployment",
-					"S3Key": "amplify-builds/servicesApiLambda-454350724d324932762b-build.zip"
+					"S3Key": "amplify-builds/servicesApiLambda-35616d566a674e32476e-build.zip"
 				}
 			}
 		},

@@ -25,14 +25,23 @@ const config = {
                 "heading": "Get Store Information"
             },
             "CarrierSettings": {
+                "cancel": "Cancel",
                 "configure_services": "Configure Services",
+                "create": "Create new service",
                 "cta": "Configure shipping services below",
                 "currency_symbol": "$",
+                "demo_disclaimer": "This carrier service is for demonstration purposes. As such, it only supports \"Flat Rate\" shipping methods, and the ability to identify a method as expedited. A production-ready shipping rates provider should handle additional logic like package size, carrier integrations, etc.",
+                "edit": "Edit",
+                "error_initialization": "Error retrieving services",
+                "error_name": "Shipping service names must be 1-100 characters in length",
+                "error_price": "The price is invalid",
                 "heading": "Carrier Settings",
+                "no_services": "No services to display",
                 "reset": "Reset",
                 "save": "Save",
                 "service_name": "Service Name",
-                "service_price": "Service Price"
+                "service_price": "Service Price",
+                "update_services_error": "Error updating services",
             }
         },
         "Install": {

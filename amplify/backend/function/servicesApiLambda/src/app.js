@@ -75,6 +75,74 @@ async function getServices(hash) {
   }
 }
 
+function servicesAreValid(services) {
+  let servicesAreValid = true
+  services.forEach(service => {
+    if (typeof service.name !== 'string'
+      || typeof service.price !== 'number'
+      || typeof service.expedited !== 'boolean'
+      || typeof service.transit_time.duration !== 'number'
+      || typeof service.transit_time.units !== 'string')
+      servicesAreValid = false
+  })
+
+  return servicesAreValid
+}
+
+/*
+hash = abcd1234
+services = [
+  {
+    name: "Standard Delivery",
+    price: 12.51,
+    expedited: false,
+    transit_time: {
+      duration: 7,
+      units: "BUSINESS_DAYS"
+    }
+  }
+]
+*/
+async function putServices(hash, services) {
+  return new Promise((resolve, reject) => {
+    if (servicesAreValid(services))
+      try {
+        const params = {
+          TableName: process.env.STORAGE_DYNAMOSTORES_NAME,
+          Key: { Hash: hash },
+          UpdateExpression: 'set #s = :s',
+          ExpressionAttributeNames: {
+            '#s': 'Services'
+          },
+          ExpressionAttributeValues: {
+            ':s': services
+          },
+          ReturnValues: "UPDATED_NEW"
+        }
+
+        dynamoDbClient.update(params, (err, data) => {
+          if (err) {
+            console.log(err)
+            reject(`Error updating services for ${hash}`)
+          }
+          else {
+            console.log(`updated services for ${hash}`)
+            resolve(data.Attributes.Services)
+          }
+        })
+      }
+      catch (err) {
+        console.log(err)
+        reject(err)
+      }
+    else {
+      console.log(`Services are invalid for request from ${hash}. Services provided:
+    ${JSON.stringify(services, null, 2)}`)
+      reject(`Services are invalid.`)
+    }
+  })
+}
+
 // declare a new express app
 var app = express()
 app.use(bodyParser.json())
@@ -85,7 +153,7 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
-});
+})
 
 
 /**********************
@@ -113,7 +181,7 @@ app.get('/services/*', function (req, res) {
 * POST *
 ****************************/
 
-app.post('/services', async function (req, res) {
+app.post('/services', function (req, res) {
   res.status(405).json({ message: 'unsupported' })
 })
 
@@ -125,9 +193,22 @@ app.post('/services/*', function (req, res) {
 * PUT *
 ****************************/
 
-app.put('/services', function (req, res) {
-  res.status(405).json({ message: 'unsupported' })
+app.put('/services', async function (req, res) {
+  const user = await getUserFromEvent(req.apiGateway.event)
+  const hash = user.Username
+  const services = req.body
+  putServices(hash, services)
+    .then(data => {
+      console.log(`About to respond, here's the data:
+    ${JSON.stringify(data, null, 2)}`)
+      res.status(200).send(data)
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).send({ message: 'Error updating services.' })
+    })
 })
+
 
 app.put('/services/*', function (req, res) {
   res.status(405).json({ message: 'unsupported' })
