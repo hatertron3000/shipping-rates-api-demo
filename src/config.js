@@ -10,13 +10,13 @@ const config = {
             "name": "Carrier Settings",
             "path": "/dashboard/carrier-settings",
             "component": "CarrierSettings",
-            "version": "0.1"
+            "version": "1.0"
         }
     ],
     "lang": {
         "Dashboard": {
             "Navigation": {
-                "brand": "Patrick's Carrier Service"
+                "brand": "Demo Carrier Service"
             },
             "StoreInformation": {
                 "button": "Get Information",

@@ -1,23 +1,31 @@
+
 # Summary
 
-This is an example BigCommerce app built with AWS Amplify. Deploy and configure this app so that you can launch it from the BigCommerce control panel and retrieve data from the BigCommerce Store Information API. It uses the [BigDesign](https://developer.bigcommerce.com/big-design/) component library, so it looks much like the native BigCommerce interface.
+This is a demo BigCommerce app built from [Amplify BigCommerce](https://github.com/hatertron3000/amplify-bigcommerce) that can demonstrate the ability for a custom application to utlize the BigCommerce Shipping Provider API to provide shipping rates in checkout. Once this app is deployed, you can register it as a shipping provider for a BigCommerce store as described here: https://developer.bigcommerce.com/api-docs/store-management/shipping/shipping-provider-api
+
+Screenshot of the rate management UI:
+![screenshot of the rate management ui](https://public-github-image-hosting.s3.amazonaws.com/carrier-service-ui.png)
 
 This application manages the following AWS resources with Amplify CLI:
 
 - IAM Roles
 - CloudFormation Stack
 - Lambda Functions
+- API Gateways
 - Cognito User and Identity Pools
 - DynamoDB
 - S3
 - CloudFront
 
->*A note about security*
+>*Disclaimer*
 >----
-> If you intend to use this application as a starting point for a production serverless BigCommerce app, consider additional security measures, such as:
-> - Always use [AWS IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html).
-> - Adding encryption in-transit with [DynamoDB Encryption Client](https://docs.aws.amazon.com/dynamodb-encryption-client/latest/devguide/what-is-ddb-encrypt.html), or an alternate API key storage service, for the API tokens this app stores in DynamoDB.
-> - Adding Logout links, and faster token expiration (default is 1 day).
+> This is intended for demonstration purposes only. 
+> * The UI is clunky
+> * Only flat-rate shipping methods are supported
+> * The [Validate Connection Options](https://developer.bigcommerce.com/api-reference/store-management/shipping-provider-api/shipping-provider/validateconnectionoptions) endpoint is not implemented
+> * And there are bugs.
+
+
 
 # Installation
 
@@ -48,21 +56,29 @@ This example will walk you through registering a [personal app](https://develope
 
 - **App Name:** The name of your application.
 - **Auth Callback URL:** The React app hosts the auth callback URL at /oauth
--- Example: https://example.com/install
-- **Load Callback URL:** The React app hosts the load callback URL at /load
 -- Example: https://example.com/oauth
+- **Load Callback URL:** The React app hosts the load callback URL at /load
+-- Example: https://example.com/load
 
 
-You may use a URL such as https://localhost:3000/install to test against the local development server. You may update them later to instead use a permanent CloudFront URL, or a custom domain. You can use tools like [Amplify Console](https://console.aws.amazon.com/amplify) or [Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/)routing-to-api-gateway.html to apply a domain to your app.
+You may use a URL such as https://localhost:3000/oauth to test against the local development server. You may update them later to instead use a permanent CloudFront URL, or a custom domain. You can use tools like [Amplify Console](https://console.aws.amazon.com/amplify) or [Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-api-gateway.html) to apply a domain to your app.
 
 1. Navigate to [https://devtools.bigcommerce.com](https://devtools.bigcommerce.com/) and log into your BigCommerce account
 2. If necessary, log in with your store owner account.
 3. Click the Create an App button
 4. Enter your App Name, then click Create
-5. Navigate to the Technical tab then enter the Auth Callback URL and Load Callback URL
+5. Navigate to the Technical tab then enter the Auth Callback URL and Load Callback URLs
+
+|Callback Type|URL|
+|----|----|
+|Auth|https://localhost:3000/oauth|
+|Load|https://localhost:3000/load|
+|Uninstall|Leave blank for now|
+
 6. Take note of your Auth Callback URL to be used as the REDIRECTURL environment variable in a CloudFormation template.
 7. Save the app
 8. Click the View Client ID link to view your Client ID and Client Secret. Take note of those values for use in Lambda environment variables and storage in Secrets Manager respectively.
+9. Take note of the App ID - it is the numeric value visible in the URL when you edit your app’s details
 
 For more information on BigCommerce apps, check out the [BigCommerce documentation](https://developer.bigcommerce.com/api-docs/getting-started).
 
@@ -119,7 +135,7 @@ Store your BigCommerce client secret in AWS Secrets Manager.
 For more information, see [Secrets Manager documentation](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
 
 
-## Clone and configure the Example App
+## Clone and configure the Demo App
 
 
 ### Clone the repo
@@ -258,7 +274,28 @@ Use the */oauth* and */load* endpoints on the CloudFront URL to update the Auth 
 	* Navigate to the Technical tab then enter the Uninstall Callback URL
 	* Click the Update and Close button
 
+#### Request Shipping Rates URL
+You will need to supply the [Request Shipping Rates URL](https://developer.bigcommerce.com/api-reference/store-management/shipping-provider-api/shipping-provider/requestshippingrates) to BigCommerce so that BigCommerce can invoke the app to supply shipping rates. The sample app utilizes AWS API Gateway to create the endpoint. You can retrieve it the same way you retrieved the Uninstall Callback URL:
+
+1. Retrieve the uninstall callback URL. 
+	* It can be found either [the AWS console](https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-call-api.html#apigateway-how-to-call-rest-api)...
+	* ...or from *src/aws-exports.js* where it is the endpoint value for an object in aws_cloud_logic_custom (Example: https://abcd1234.execute-api.region.amazonaws.com/environment) named _carrierServiceApi_.
+
+> If you retrieve the URL from the aws-exports.js file, you will need to
+> append `/rates` to the URL.
+
+
 ## Usage
+
+### Register the Carrier with BigCommerce
+
+Follow the steps under _Sign Up_ to request BigCommerce to register the app as a shipping provider: [https://developer.bigcommerce.com/api-docs/store-management/shipping/shipping-provider-api#shipping_provider-signup](https://developer.bigcommerce.com/api-docs/store-management/shipping/shipping-provider-api#shipping_provider-signup)
+
+Note: The example app expects a checkbox/boolean Connection Option that indicates whether the app should return expedited rates. This connection option must be created when the app is registered with BigCommerce.
+
+Example screenshot of _API Key_ and _Enable Expedited Shipping_ Connection Options in the BC control panel:
+![https://public-github-image-hosting.s3.amazonaws.com/carrier-service-connection-options.png](https://public-github-image-hosting.s3.amazonaws.com/carrier-service-connection-options.png)
+
 ### App Installation Flow
 To authorize the app to access the BigCommerce API on behalf of a store, install the app in the BigCommerce store:
 1.  Log in to your BigCommerce store. If you don’t have one yet, [sign up for a trial](https://www.bigcommerce.com/essentials/). Make sure to use the same email address that you used to register the app at [https://devtools.bigcommerce.com/](https://devtools.bigcommerce.com/). 
@@ -273,6 +310,15 @@ At this point, BigCommerce creates an iframe in the control panel that sends the
 -   Consider adding support to run the standalone shell for [react-dev-tools](https://www.npmjs.com/package/react-devtools)  
 The example app requires the user to close the app, then relaunch it. That’s because the successful signup request creates the user record in Cognito, but it does not grant the user the tokens it will need to access the app’s backend later. The app requires a Load request from BigCommerce to initiate the custom auth flow, and grant the tokens. The Load request is triggered when the user clicks the app’s icon in their BigCommerce control panel.
 
+### Enable the Shipping Provider
+Once the carrier has been registered with BigCommerce and the app is installed, a new shipping method will be visible in the BigCommerce control panel when editing a shipping zone under from _Store Setup > Shipping_ under _Real Time Shipping Quotes_:
+
+![https://public-github-image-hosting.s3.amazonaws.com/carrier-service-shipping-zone-settings.png](https://public-github-image-hosting.s3.amazonaws.com/carrier-service-shipping-zone-settings.png)
+
+Use the _Connect_ button to enable the carrier, configure connection options, and test the rate request endpoint. 
+
+BigCommerce also provides APIs to manage shipping zones and configure shipping methods. This example app does not integrate with those APIs. Read more in the [BigCommerce documentation](https://developer.bigcommerce.com/api-reference/store-management/shipping-api).
+
 ### Custom Auth Flow
 1.  Log into the BigCommerce store
 2.  Click Apps, then click the App’s icon  
@@ -283,9 +329,10 @@ The example app requires the user to close the app, then relaunch it. That’s b
 3.  Confirm the UI is rendered
 4.  Click the Get Store Information button
 * At this point, the React client should use the API.get() method to invoke the app’s API with the identity and access tokens supplied by Cognito. If you receive an error from the API, check the CloudWatch logs for the bcApiClient and bcApiLambda functions.
-
 5.  Confirm the React client receives the store’s information from the BigCommerce API
 
+### Configure Rates
+Once you are able to launch the UI in the BigCommerce control panel, you can add, remove, and edit the flat-rate shipping methods returned by the app.
 
 ### Uninstall  Flow
 
